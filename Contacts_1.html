@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <!-- styles -->
+    <link rel="stylesheet" href="bootstrap-4.3.1-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="fontawesome-free-5.8.1-web/css/all.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+    <main>
+        <section id="contacts1">
+            <div class="container">
+                <h2>Contact Us</h2>
+
+                <div class="show-or-hide span-edit">
+                    <p><i class="fas fa-paper-plane"></i> <span>주소 : 주소를 주소를 작성해주세요.</span></p>
+                    <p><i class="fas fa-phone"></i> <span>전화번호 : 전화번호를 주소를 작성해주세요.</span></p>
+                    <p><i class="fas fa-map-marker-alt"></i> <span>이메일 : 이메일을 주소를 작성해주세요.</span></p>
+                </div>
+
+                <form action="#" method="post">
+                    <div class="form-group">
+                        <label for="name" class="sr-only">이름</label>
+                        <input type="text" name="name" id="name" placeholder="name" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="sr-only">이메일</label>
+                        <input type="text" name="email" id="email" placeholder="email" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message" class="sr-only">메시지</label>
+                        <textarea class="form-control" name="message" id="message" cols="30" rows="10"
+                                  placeholder="message" required></textarea>
+                    </div>
+                    <button class="btn btn-primary w-100">보내기</button>
+                </form>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
