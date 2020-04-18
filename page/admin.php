@@ -1,3 +1,9 @@
+<?php
+if($me) {
+    move('/teaser_builder');
+}
+?>
+
 <!-- 로그인 페이지 -->
 <section id="admin" class="full-screen bg-light">
     <div class="container">

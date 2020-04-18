@@ -136,6 +136,8 @@ function initEvents() {
         }).done(res => {
             console.log(res);
         })
+
+        alert('페이지가 적용(등록)되었습니다. \n다시 로그인 시 가장 최근에 적용된 페이지가 팝업으로 보여집니다. \n* 팝업을 허용해야지만 정상 작동합니다.')
     })
 
     /* 파일 업로드 */
@@ -203,7 +205,7 @@ function initEvents() {
         /* 스크롤 정보를 저장할때 전체 윈도우의 스크롤 각각의 tool-box의 스크롤 정보 값을 저장하고 불러온다. */
     })
 
-    /* 페이지 추가 */
+    /* 페이지 추가 (정확히는 적용) */
     $(document).on('click', '.btn-add-page', async function () {
         /* 고유코드 */
         let code = 'P' + new Date().getTime();
@@ -241,12 +243,14 @@ function initEvents() {
         /* 추가된 페이지 active */
         $('.page:last-child').click()
 
+        /* DB 에 데이터 등록 */
         $.post('/add.page', {
             html: $('#app').clone().removeClass('teaser-builder')[0].outerHTML,
             code: $('.page.active [name=code]').val()
         }).done(res => {
             console.log(res);
         })
+
     })
 
     /* 페이지 선택 */

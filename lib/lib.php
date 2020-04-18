@@ -1,68 +1,63 @@
 <?php
-
-/* DB 설정 */
-$pdo = new pdo('mysql:host=localhost; dbname=chungnam', 'root', '', array(
+/* setting pdo */
+$pdo = new pdo('mysql:host=localhost; dbname=blocre', 'root', '', array(
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
     PDO::MYSQL_ATTR_INIT_COMMAND => 'set names utf8'
 ));
 
-/* 세션 만료 시간 설정 (2시간) */
-session_cache_expire(120);
+/* if admin is not exist, create new admin data */
+$existing_admin = $pdo->query("select * from users where id = 'admin'")->rowCount();
+if (!$existing_admin) {
+    $stmt = $pdo->prepare("insert into users(name, id, password, email) values(?, ?, ?, ?)");
+    $stmt->execute(['admin', 'admin', hash('sha256', 1234), 'admin@email.com']);
+}
 
-/* 세션 시작 */
+/* session expire time is 2 hours */
+session_cache_expire(120);
+/* start session */
 session_start();
 
+/* set default time zone */
 date_default_timezone_set('Asia/Seoul');
 
+/* functions */
+require_once 'functions.php';
 
-/* 함수들 */
-function alert($msg)
-{
-    echo "<script>alert('$msg')</script>";
-}
+/* 로그인 정보 가져오기 */
+$me = isset($_SESSION['me']) ? $_SESSION['me'] : null;
 
-function move($url)
-{
-    echo "<script>location.replace('$url')</script>";
-}
-
-function back()
-{
-    echo "<script>history.back()</script>";
-    exit();
-}
-
-
-function color($img, $name)
-{
-    if ($name == '인터넷 익스플로러') return imagecolorallocate($img, 0x8e, 0xdb, 0xe3);
-    if ($name == '파이어 폭스') return imagecolorallocate($img, 0xff, 0xac, 0x00);
-    if ($name == '크롬') return imagecolorallocate($img, 0xdc, 0x4c, 0x40);
-    if ($name == '엣지') return imagecolorallocate($img, 0x00, 0x78, 0xd7);
-    return imagecolorallocate($img, 0x33, 0x33, 0x33);
-}
-
-
+/* 업로드 폴더를 생성해준다. */
 if (!is_dir('./uploads')) {
     mkdir('./uploads');
+}
+//if (!is_dir('./uploads/logo')) {
+//    mkdir('./uploads/logo');
+//}
+
+if (!is_dir('./excel')) {
+    mkdir('./excel');
+}
+
+if (!is_dir('./data')) {
+    mkdir('./data');
 }
 
 define('ROOT', $_SERVER["DOCUMENT_ROOT"]);
 
-/* 리퀘스트 풀어주기 */
+/* extract request, extract is resolve array values */
 extract($_REQUEST);
 $uri = $_SERVER["REQUEST_URI"];
 
 //echo $uri."<br>";
 
 $params = explode('/', $_SERVER["REQUEST_URI"]);
-
 array_shift($params);
 
 if (!$params[0]) $params[0] = 'index';
 //var_dump($params);
 
+/* GET 방식으로 파라미터가 넘어올 경우, 그 값을 unset 한다. */
 if ($_GET) {
     $cleanURL = explode('?', $uri)[0];
 
@@ -74,6 +69,8 @@ if ($_GET) {
 }
 
 $method = $_SERVER["REQUEST_METHOD"];
+
+/* 액션 처리 부분.. */
 if ($method == 'GET') {
     /* 페이지가 index 일 경우 */
     if ($params[0] == 'index') {
@@ -103,7 +100,6 @@ if ($method == 'GET') {
             imagefilledrectangle($img, 0, 0, 800, 0.1, $lineColor);
             imagefilledrectangle($img, 0, 50, 800, 50.1, $lineColor);
             imagefilledrectangle($img, 0, 100, 800, 100.1, $lineColor);
-
 
             /* th 그리기 */
             $text = "유형별";
@@ -299,7 +295,6 @@ if ($method == 'GET') {
                         } else {
                             // Add the files
                             $zipArchive->addFile($dir . $file, $zipdir . $file);
-
                         }
                     }
                 }
@@ -322,12 +317,18 @@ if ($method == 'GET') {
         // header('Content-disposition: attachment; filename='.$name);
         // header('Content-Length: ' . $length);
         // readfile(ROOT.'/public/excel/'.$name);
+
         header('Content-Type: application/zip');
         header('Content-disposition: attachment; filename=' . $zipname);
         header('Content-Length: ' . filesize(ROOT . '/excel/' . $zipname));
         readfile(ROOT . '/excel/' . $zipname);
+    } else if ($params[0] == 'logout') {
+        session_destroy();
+        alert('로그아웃되었습니다');
+        move('/admin');
     }
 } else if ($method == 'POST') {
+    /* POST의 경우... */
     $error = '';
 
     if ($params[0] == 'admin') {
@@ -348,15 +349,20 @@ if ($method == 'GET') {
         }
         if (!$error) {
             alert('로그인 성공');
-            $page = $pdo->query("select * from pages")->fetch();
+            $page = $pdo->query("select * from pages where made = '$user->id'")->fetch();
 
+//            print_r($page);
+
+            $_SESSION['me'] = $user;
+
+            /* 자신이 생성한 페이지가 있을 경우 */
             if ($page) {
-                /* 마지막 생성된 페이지로 이동한다. */
-                move("/$page->code");
-            } else {
-                /* 없으면 관리페이지로.. */
-                move('/teaser_builder');
+                /* 마지막으로 자신이 생성한 페이지를 팝업으로 띄어준다. (팝업 허용을 해주어야한다.) */
+//                move("/$page->code");
+                echo("<script>window.open('/$page->code', '', '')</script>");
             }
+
+            move('/teaser_builder');
         }
     } else if ($params[0] == 'register') {
         if ($name == '') {
@@ -422,6 +428,7 @@ if ($method == 'GET') {
 
                 $dir = $_SERVER['DOCUMENT_ROOT'] . "/uploads/$folder";
 
+                /* 만들어주기 */
                 if (!is_dir($dir)) {
                     mkdir($dir);
                 }
@@ -495,8 +502,7 @@ if ($method == 'GET') {
         if ($page) {
             $pdo->query("update pages set html = '$html' where code = '$code'");
         } else {
-            $pdo->query("insert into pages (code, html) values('$code', '$html')");
-
+            $pdo->query("insert into pages (code, html, made) values('$code', '$html', '$me->id')");
         }
 
         echo '적용이 완료되었습니다.';
@@ -514,7 +520,6 @@ if ($method == 'GET') {
         }
 
         $dir = $_SERVER['DOCUMENT_ROOT'] . '/data/';
-
 
         if (!is_dir($dir)) {
             mkdir($dir);

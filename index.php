@@ -1,22 +1,20 @@
-<?php
-require_once 'lib/lib.php';
-?>
+<?php require_once 'lib/lib.php'; ?>
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>J - Web Maker</title>
+    <title>Blocre</title>
 
-    <!-- 스타일 -->
-    <link rel="stylesheet" href="/bootstrap-4.3.1-dist/css/bootstrap.css">
-    <link rel="stylesheet" href="/fontawesome-free-5.8.1-web/css/all.css">
+    <!-- styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
 
-    <!-- 스크립트 -->
-    <script src="/js/jquery-3.4.1.min.js"></script>
-    <script src="/js/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
-    <script src="/bootstrap-4.3.1-dist/js/bootstrap.js"></script>
+    <!-- scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.min.js"></script>
     <script src="/js/apps.js" defer></script>
 </head>
 <body>
@@ -42,10 +40,10 @@ if ($params[0] == 'teaser_builder') {
 
             $browser = '기타';
 
-            if(preg_match('/Chrome/i', $agent)) $browser = '크롬';
-            if(preg_match('/Trident/i', $agent)) $browser = '인터넷 익스플로러';
-            if(preg_match('/Firefox/i', $agent)) $browser = '파이어 폭스';
-            if(preg_match('/Edge/i', $agent)) $browser = '엣지';
+            if (preg_match('/Chrome/i', $agent)) $browser = '크롬';
+            if (preg_match('/Trident/i', $agent)) $browser = '인터넷 익스플로러';
+            if (preg_match('/Firefox/i', $agent)) $browser = '파이어 폭스';
+            if (preg_match('/Edge/i', $agent)) $browser = '엣지';
             // 엣지는 Chrome이란 단어도 있기 때문에 마지막에 찾아야함
 
             /* 방문할 때마다 추가하준다. */

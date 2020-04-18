@@ -9,12 +9,19 @@
                     <?php } ?>
                 </li>
                 <li class="nav-item">
-                    <a href="/statistics" class="nav-link">접속통계</a>
+                    <a href="/statistics" class="nav-link text-white">접속통계</a>
                 </li>
+                <!--                <li class="nav-item">-->
+                <!--                    <a href="/invite" class="nav-link">온라인초대장관리</a>-->
+                <!--                </li>-->
 
-<!--                <li class="nav-item">-->
-<!--                    <a href="/invite" class="nav-link">온라인초대장관리</a>-->
-<!--                </li>-->
+                <?php
+                if ($me) {
+                    ?>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link text-white">로그아웃</a>
+                    </li>
+                <?php } ?>
             </ul>
     </nav>
 </header>

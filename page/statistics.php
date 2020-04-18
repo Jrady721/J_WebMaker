@@ -3,7 +3,6 @@
 $graph = null;
 
 if (isset($params[1])) {
-
     $start = $params[1];
     $end = $params[2];
 
@@ -32,8 +31,8 @@ if (isset($params[1])) {
 
 
 include 'header.php';
-
 ?>
+
 <section id="statistics">
     <div class="container">
         <div class="row">
@@ -89,9 +88,6 @@ include 'header.php';
 //                            if ($name == '기타')
 //                                return '<span style="display:inline-block; width:15px; height:15px; margin-right:.5rem; background:#333"></span>';
 //                        }
-
-
-
                         ?>
 
                     <?php } else { ?>
